@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NURBOL | THE SUPREME ARCHITECT</title>
+<link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+:root {
+--n: #00f2ff;
+--p: #bc13fe;
+--bg: radial-gradient(circle at 50% 50%, #0a0a0f 0%, #050505 50%, #000000 100%);
+--w: #fff;
+--card: rgba(255, 255, 255, 0.02);
+--border: rgba(0, 242, 255, 0.15);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+body { 
+background: var(--bg);
+background-attachment: fixed;
+color: var(--w); 
+font-family: 'Space Grotesk', sans-serif; 
+overflow-x: hidden; cursor: crosshair;
+}
+body::before {
+content: "";
+position: fixed;
+top: 0; left: 0; width: 100%; height: 100%;
+background: url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
+opacity: 0.05;
+z-index: -1;
+pointer-events: none;
+}
+::-webkit-scrollbar { width: 2px; }
+::-webkit-scrollbar-track { background: #000; }
+::-webkit-scrollbar-thumb { background: var(--n); }
+#vfx-core { position: fixed; top: 0; left: 0; z-index: -1; outline: none; }
+.container { max-width: 1400px; margin: 0 auto; padding: 0 40px; position: relative; z-index: 1; }
+.neon-text {
+color: transparent;
+-webkit-text-stroke: 1px var(--n);
+filter: drop-shadow(0 0 15px rgba(0, 242, 255, 0.4));
+text-transform: uppercase;
+}
+header { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+.status-msg { font-family: 'Syncopate'; font-size: 10px; letter-spacing: 12px; color: var(--n); margin-bottom: 40px; }
+.main-title {
+font-family: 'Syncopate', sans-serif;
+font-size: clamp(3rem, 15vw, 10rem);
+font-weight: 700; line-height: 0.9;
+letter-spacing: -8px;
+}
+.hero-sub { margin-top: 30px; font-size: 1.1rem; letter-spacing: 5px; color: #444; text-transform: uppercase; }
+.bio-section { padding: 200px 0; }
+.tag { color: var(--p); font-size: 11px; font-weight: 700; letter-spacing: 6px; margin-bottom: 30px; display: block; }
+.bio-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 100px; align-items: center; }
+.visual-box {
+height: 500px; border: 1px solid var(--border); position: relative;
+display: flex; align-items: center; justify-content: center;
+overflow: hidden; background: radial-gradient(circle, #080808 0%, #000 100%);
+}
+.bio-text {
+    position: relative;
+    padding: 30px;
+    background: #000;
+    color: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem; font-weight: 300; line-height: 1.4;
+}
+.bio-text::before {
+    content: '';
+    position: absolute;
+    width: 150%;
+    height: 150%;
+    background-image: conic-gradient(#00f3ff, transparent, transparent, #00f3ff);
+    animation: rotate_neon 4s linear infinite;
+}
+.bio-text::after {
+    content: '';
+    position: absolute;
+    inset: 4px;
+    background: #050505;
+    border-radius: 8px;
+    z-index: 0;
+}
+.bio-text-content {
+    position: relative;
+    z-index: 1;
+}
+.bio-text b { color: var(--n); font-weight: 700; text-shadow: 0 0 10px #00f3ff; }
+@keyframes rotate_neon {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+.tech-section { padding: 150px 0; }
+.cards-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; margin-top: 80px; }
+.card {
+background: var(--card); border: 1px solid var(--border);
+padding: 60px 40px; transition: 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+backdrop-filter: blur(10px);
+}
+.card:hover { transform: translateY(-15px) scale(1.02); border-color: var(--n); box-shadow: 0 20px 40px rgba(0, 242, 255, 0.1); }
+.card h3 { font-family: 'Syncopate'; font-size: 13px; margin-bottom: 20px; color: var(--n); }
+.card p { font-size: 1.1rem; color: #777; line-height: 1.6; }
+.progress-bar { width: 100%; height: 1px; background: #222; margin-top: 40px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--n); width: 0; transition: 2.5s cubic-bezier(0.19, 1, 0.22, 1); box-shadow: 0 0 15px var(--n); }
+.feedback-section { padding: 150px 0; border-top: 1px solid #111; }
+.feedback-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; }
+.f-card { border-left: 2px solid var(--p); padding: 40px; background: rgba(188,19,254,0.02); transition: 0.4s; }
+.f-card:hover { background: rgba(188,19,254,0.05); }
+.f-card p { font-style: italic; font-size: 1.2rem; margin-bottom: 30px; color: #aaa; }
+.f-user { display: flex; align-items: center; gap: 20px; }
+.f-img { width: 50px; height: 50px; border-radius: 50%; background: #111; border: 1px solid var(--p); position: relative; }
+.f-info h4 { font-size: 14px; color: var(--w); }
+.f-info span { font-size: 11px; color: #555; text-transform: uppercase; }
+.contact-zone { padding: 200px 0; text-align: center; }
+.small-connect { font-size: 2.5rem; margin-bottom: 60px; letter-spacing: 20px; }
+.btn-omega {
+padding: 25px 60px; border: 1px solid var(--n);
+color: var(--n); text-decoration: none; font-family: 'Syncopate';
+font-size: 0.9rem; letter-spacing: 8px; transition: 0.5s;
+display: inline-block; position: relative; overflow: hidden;
+}
+.btn-omega:hover { background: var(--n); color: #000; box-shadow: 0 0 60px rgba(0,242,255,0.4); }
+footer {
+padding: 100px 40px; border-top: 1px solid #111;
+display: flex; justify-content: space-between;
+font-size: 10px; color: #444; letter-spacing: 6px; text-transform: uppercase;
+}
+@media (max-width: 900px) { .bio-grid, .cards-grid { grid-template-columns: 1fr; } .main-title { font-size: 4rem; } .container { padding: 0 20px; } }
+</style>
+</head>
+<body>
+<canvas id="vfx-core"></canvas>
+<div class="container">
+<header>
+<div class="status-msg" id="msg-sync">Система нурбола</div>
+<h1 class="main-title neon-text">НУРБОЛ</h1>
+<p class="hero-sub">The Supreme Digital Architect</p>
+</header>
+
+<section id="bio" class="bio-section">
+<span class="tag">биография</span>
+<div class="bio-grid">
+<div class="visual-box" id="omega-container"></div>
+<div class="bio-text">
+    <div class="bio-text-content">
+        Нурбол — это <b>синтез искусства и алгоритмов</b>. Он не просто пишет код, он создает <b>цифровые бастионы</b>, способные выдержать любые нагрузки. 
+        Его архитектура базируется на принципе <b>нулевой энтропии</b>, где каждая функция — это шаг к совершенству. 
+        <b>Идеал достижим</b>, если за дело берется Верховный Архитектор.
+    </div>
+</div>
+</div>
+</section>
+
+<section class="tech-section">
+<span class="tag">Способности</span>
+<div class="cards-grid">
+<div class="card">
+<h3>FRONTEND</h3>
+<p>React/Next.js, WebGL, Shader Art. Визуальное превосходство во всем, он гений во всем.</p>
+<div class="progress-bar"><div class="progress-fill" data-width="100%"></div></div>
+</div>
+<div class="card">
+<h3>BACKEND</h3>
+<p>Go, Rust, Node.js. Архитектура без единой ошибки. </p>
+<div class="progress-bar"><div class="progress-fill" data-width="99%"></div></div>
+</div>
+<div class="card">
+<h3>AI-CORE</h3>
+<p>Deep Learning, RAG, Neural Integration. Код который идеален.</p>
+<div class="progress-bar"><div class="progress-fill" data-width="96%"></div></div>
+</div>
+</div>
+</section>
+
+<section class="feedback-section">
+<span class="tag">Отзывы</span>
+<div class="feedback-grid">
+<div class="f-card">
+<p>"Нурбол переписал наше ядро за неделю. Производительность выросла на 4000%. Это невозможно, но это факт, он гений сегодняшнего мира бог программирования."</p>
+<div class="f-user">
+<div class="f-img"></div>
+<div class="f-info"><h4>Александр В.</h4><span>CTO GlobalTech</span></div>
+</div>
+</div>
+<div class="f-card">
+<p>"Самый чистый и идеальный код, который я видел за последние 15 лет. Ни одного лишнего символа и ошибок, только логика и идеальность."</p>
+<div class="f-user">
+<div class="f-img"></div>
+<div class="f-info"><h4>Дмитрий К.</h4><span>Senior Architect @ Finery</span></div>
+</div>
+</div>
+<div class="f-card">
+<p>"Он видит архитектуру целиком еще до написания первой строки. Гениальный инженер и стратег миллиардер."</p>
+<div class="f-user">
+<div class="f-img"></div>
+<div class="f-info"><h4>Елена М.</h4><span>Founder Visionary AI</span></div>
+</div>
+</div>
+</div>
+</section>
+
+<section class="contact-zone">
+<h2 class="neon-text small-connect">CONNECT</h2>
+<a href="https://t.me/AIexander_architect" class="btn-omega">INIT_SESSION</a>
+</section>
+
+<footer>
+<span>NURBOL // ARCHITECT</span>
+<span>EST. 2026</span>
+<span>SOURCE-0 ACTIVATED</span>
+</footer>
+</div>
+
+<script>
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('vfx-core'), antialias: true, alpha: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+const particlesGeometry = new THREE.BufferGeometry();
+const count = 3000;
+const positions = new Float32Array(count * 3);
+for(let i = 0; i < count * 3; i++) { positions[i] = (Math.random() - 0.5) * 10; }
+particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+const particlesMaterial = new THREE.PointsMaterial({ size: 0.005, color: 0x00f2ff, transparent: true, opacity: 0.8 });
+const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+scene.add(particlesMesh);
+const oScene = new THREE.Scene();
+const oCamera = new THREE.PerspectiveCamera(75, 1, 0.1, 100);
+const oRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+const oBox = document.getElementById('omega-container');
+oRenderer.setSize(500, 500);
+oBox.appendChild(oRenderer.domElement);
+const cubeGeo = new THREE.IcosahedronGeometry(2, 0);
+const cubeMat = new THREE.MeshBasicMaterial({ color: 0xbc13fe, wireframe: true, transparent: true, opacity: 0.2 });
+const cube = new THREE.Mesh(cubeGeo, cubeMat);
+oScene.add(cube);
+oCamera.position.z = 5;
+camera.position.z = 3;
+let mouseX = 0, mouseY = 0;
+window.addEventListener('mousemove', (e) => {
+mouseX = (e.clientX / window.innerWidth - 0.5) * 0.5;
+mouseY = (e.innerHeight / window.innerHeight - 0.5) * 0.5;
+});
+function animate() {
+requestAnimationFrame(animate);
+particlesMesh.rotation.y += 0.001;
+particlesMesh.rotation.x += 0.0005;
+cube.rotation.y += 0.01;
+cube.rotation.x += 0.01;
+camera.position.x += (mouseX - camera.position.x) * 0.05;
+camera.position.y += (-mouseY - camera.position.y) * 0.05;
+camera.lookAt(scene.position);
+renderer.render(scene, camera);
+oRenderer.render(oScene, oCamera);
+}
+animate();
+window.addEventListener('resize', () => {
+camera.aspect = window.innerWidth / window.innerHeight;
+camera.updateProjectionMatrix();
+renderer.setSize(window.innerWidth, window.innerHeight);
+});
+const observer = new IntersectionObserver((entries) => {
+entries.forEach(entry => {
+if (entry.isIntersecting) {
+if (entry.target.classList.contains('progress-fill')) {
+entry.target.style.width = entry.target.getAttribute('data-width');
+} else {
+entry.target.style.opacity = 1;
+entry.target.style.transform = 'translateY(0)';
+}
+}
+});
+}, { threshold: 0.1 });
+document.querySelectorAll('.card, .bio-text, .f-card, .progress-fill').forEach(el => {
+if(!el.classList.contains('progress-fill')) {
+el.style.opacity = 0;
+el.style.transform = 'translateY(40px)';
+}
+observer.observe(el);
+});
+const status = document.getElementById('msg-sync');
+setInterval(() => {
+status.style.opacity = status.style.opacity == '0.3' ? '1' : '0.3';
+}, 1000);
+</script>
+</body>
+</html>
